@@ -22,6 +22,13 @@ class Todo extends Project {
     }
 }
 
+let deleteButtons = document.querySelectorAll('.button');
+for (let button of deleteButtons) {
+    button.addEventListener('click', () => {
+        button.parentElement.parentElement.remove();
+    })
+}
+
 let cleanCar = new Todo('Clean Carpet', 'Vaccum the carpets', '02/12/26', 'Medium', 'Clean Car');
 let changeOil = new Todo('Change Oil', 'Change car engine oil', '05/12/26', 'High', 'Clean Car');
 
