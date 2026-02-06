@@ -1,0 +1,23 @@
+.header {
+    border: 1px solid black;
+    text-align: center;
+}
+
+.column-title {
+    display: flex;
+    gap: 15px;
+}
+
+.column-title-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.button {
+    height: 30px;
+    align-self: center;
+}
+
+.project-column {
+    border: 1px solid black;
+}
