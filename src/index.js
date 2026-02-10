@@ -7,7 +7,9 @@ class Project {
     todoItems = [];
     constructor(projectTitle) {
         this.projectTitle = projectTitle;
-        Project.projects.push(this);
+        if (this.constructor === Project) {
+            Project.projects.push(this);
+        }
     }
 }
 
@@ -129,12 +131,15 @@ function addItemElement() {
     let addItemProjectTitle = document.createElement('h2');
     addItemProjectTitle.textContent = 'Select the project this item belongs to:';
     let addProjectDropDown = document.createElement('select');
+
+    let projectDropDownValue = '';
     for (let i = 0; i < Project.projects.length; i++) {
         if (Project.projects[i] != null) {
             let projectOption = document.createElement('option');
             projectOption.value = Project.projects[i].projectTitle;
             projectOption.textContent = Project.projects[i].projectTitle;
-            addProjectDropDown.appendChild(projectOption)
+            addProjectDropDown.appendChild(projectOption);
+            projectDropDownValue = Project.projects[i].projectTitle;
         }
         else {
             let projectOption = document.createElement('option');
@@ -144,7 +149,7 @@ function addItemElement() {
         }
     }
     addItemProjectTitle.appendChild(addProjectDropDown);
-    let projectDropDownValue = '';
+
     addProjectDropDown.addEventListener('change', (e) => {
         projectDropDownValue = e.target.value;
     });
@@ -153,6 +158,13 @@ function addItemElement() {
     addPageButton.textContent = 'Add';
     addPageButton.addEventListener('click', () => {
         let newItem = new Todo(currentTitleValue, currentDescriptionValue, currentDueDateValue, currentDropDownValue, projectDropDownValue)
+        for (let project of Project.projects) {
+            console.log(projectDropDownValue)
+            if (project.projectTitle === projectDropDownValue) {
+                project.add(project.todoItems, newItem);
+                console.log(project.todoItems)
+            }
+        }
         let projectColumn = document.querySelector('.to-do-column').firstElementChild;
 
 
@@ -203,6 +215,53 @@ function setDeleteButtons() {
     }
 }
 
+let projects = document.querySelectorAll('.project-column-title');
+for (let project of projects) {
+    project.addEventListener('click', () => {
+        let projectTitle = project.firstElementChild.textContent;
+        for (let projectItem of Project.projects) {
+            if (projectTitle === projectItem.projectTitle) {
+                let listOfItems = document.querySelector('.to-do-column').firstElementChild;
+                listOfItems.innerHTML = ' ';
+                for (let i = 0; i < projectItem.todoItems.length; i++) {
+                    let newItemElement = createTodoItemElement(projectItem.todoItems[i]);
+                    listOfItems.appendChild(newItemElement);
+                }
+            }
+            else {
+                let listOfItems = document.querySelector('.to-do-column').firstElementChild;
+                listOfItems.innerHTML = ' ';
+            }
+        }
+    })
+}
+
+function createTodoItemElement(item) {
+    let todoListItem = document.createElement('li');
+
+    let todoListItemDiv = document.createElement('div');
+    todoListItemDiv.classList.add('.column-title');
+
+    let todoItemHeader = document.createElement('h2');
+    todoItemHeader.textContent = item.title;
+    todoListItemDiv.appendChild(todoItemHeader);
+
+    let todoItemDescription = document.createElement('h4');
+    todoItemDescription.textContent = item.description;
+    todoListItemDiv.appendChild(todoItemDescription);
+
+    let todoItemDueDate = document.createElement('h4');
+    todoItemDueDate.textContent = item.dueDate;
+    todoListItemDiv.appendChild(todoItemDueDate);
+
+    let todoItemPriority = document.createElement('h4');
+    todoItemPriority.textContent = item.priority;
+    todoListItemDiv.appendChild(todoItemPriority);
+
+    todoListItem.appendChild(todoListItemDiv);
+    return todoListItem;
+}
+
 let addProjectButton = document.querySelector('.add-project-button');
 addProjectButton.addEventListener('click', () => {
     //add a function to create a pop up screen to add items
@@ -220,8 +279,8 @@ let cleanCar = new Todo('Clean Carpet', 'Vaccum the carpets', '02/12/26', 'Mediu
 let changeOil = new Todo('Change Oil', 'Change car engine oil', '05/12/26', 'High', 'Clean Car');
 
 let carMaintenance = new Project('Clean Car');
+
 carMaintenance.add(carMaintenance.todoItems, cleanCar)
 carMaintenance.add(carMaintenance.todoItems, changeOil)
 
 carMaintenance.remove(carMaintenance.todoItems, cleanCar)
-// console.log(carMaintenance)

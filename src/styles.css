@@ -3,7 +3,8 @@
     text-align: center;
 }
 
-.column-title {
+.column-title,
+.project-column-title {
     display: flex;
     gap: 15px;
 }
