@@ -3,9 +3,11 @@ import remove from "./remove.js"
 import "./styles.css"
 
 class Project {
+    static projects = [];
     todoItems = [];
     constructor(projectTitle) {
         this.projectTitle = projectTitle;
+        Project.projects.push(this);
     }
 }
 
@@ -22,12 +24,197 @@ class Todo extends Project {
     }
 }
 
-let deleteButtons = document.querySelectorAll('.button');
-for (let button of deleteButtons) {
-    button.addEventListener('click', () => {
-        button.parentElement.parentElement.remove();
+function addProjectElement() {
+    let addPage = document.createElement('div');
+
+    let addPageTitle = document.createElement('h2');
+    addPageTitle.textContent = 'Enter your project title:';
+
+    let addPageForm = document.createElement('input');
+    let currentValue = '';
+    addPageForm.addEventListener('input', (e) => {
+        currentValue = e.target.value;
+    });
+
+    let addPageButton = document.createElement('button');
+    addPageButton.textContent = 'Add';
+    addPageButton.addEventListener('click', () => {
+        let newProject = new Project(currentValue);
+        let projectColumn = document.querySelector('.project-column').firstElementChild;
+
+
+        let listContainer = document.createElement('li');
+        let listItem = document.createElement('div');
+        let itemTitle = document.createElement('h2');
+        let deleteButton = document.createElement('button');
+        itemTitle.textContent = newProject.projectTitle;
+        deleteButton.textContent = 'Delete';
+        listItem.classList.add('column-title');
+        deleteButton.classList.add('delete-button');
+
+        listItem.appendChild(itemTitle);
+        listItem.appendChild(deleteButton);
+
+        listContainer.appendChild(listItem)
+
+        projectColumn.appendChild(listContainer)
+        setDeleteButtons();
     })
+
+    addPage.appendChild(addPageTitle);
+    addPage.appendChild(addPageForm);
+    addPage.appendChild(addPageButton);
+
+    document.body.appendChild(addPage)
 }
+
+function addItemElement() {
+    let addPage = document.createElement('div');
+
+    //add item title
+    let addPageTitle = document.createElement('h2');
+    addPageTitle.textContent = 'Enter your To-Do Item title:';
+    let addTitleForm = document.createElement('input');
+    addPageTitle.appendChild(addTitleForm);
+    let currentTitleValue = '';
+    addTitleForm.addEventListener('input', (e) => {
+        currentTitleValue = e.target.value;
+    });
+
+    //add item description
+    let addPageDescription = document.createElement('h2');
+    addPageDescription.textContent = 'Type a description for your item:';
+    let addDescriptionForm = document.createElement('textarea');
+    addPageDescription.appendChild(addDescriptionForm);
+    let currentDescriptionValue = '';
+    addDescriptionForm.addEventListener('input', (e) => {
+        currentDescriptionValue = e.target.value;
+    });
+
+    //add item due date
+    let addDueDateTitle = document.createElement('h2');
+    addDueDateTitle.textContent = 'Enter a due date:';
+    let addDueDate = document.createElement('input');
+    addDueDate.type = 'date';
+    addDueDateTitle.appendChild(addDueDate);
+    let currentDueDateValue = '';
+    addDueDate.addEventListener('change', (e) => {
+        currentDueDateValue = e.target.value;
+    });
+
+    //add item priority
+    let addPriorityTitle = document.createElement('h2');
+    addPriorityTitle.textContent = 'Enter your To-Do Item title:';
+    let addPriorityDropDown = document.createElement('select');
+    let low = document.createElement('option');
+    low.value = 'Low';
+    low.textContent = 'Low';
+    let medium = document.createElement('option');
+    medium.value = 'Medium';
+    medium.textContent = 'Medium';
+    let high = document.createElement('option');
+    high.value = 'High';
+    high.textContent = 'High';
+    addPriorityDropDown.appendChild(high);
+    addPriorityDropDown.appendChild(medium);
+    addPriorityDropDown.appendChild(low);
+    addPriorityTitle.appendChild(addPriorityDropDown);
+
+    let currentDropDownValue = high.textContent;
+    addPriorityDropDown.addEventListener('change', (e) => {
+        currentDropDownValue = e.target.value;
+    });
+
+    //add item project title
+    let addItemProjectTitle = document.createElement('h2');
+    addItemProjectTitle.textContent = 'Select the project this item belongs to:';
+    let addProjectDropDown = document.createElement('select');
+    for (let i = 0; i < Project.projects.length; i++) {
+        if (Project.projects[i] != null) {
+            let projectOption = document.createElement('option');
+            projectOption.value = Project.projects[i].projectTitle;
+            projectOption.textContent = Project.projects[i].projectTitle;
+            addProjectDropDown.appendChild(projectOption)
+        }
+        else {
+            let projectOption = document.createElement('option');
+            projectOption.value = 'null';
+            projectOption.textContent = 'N/A';
+            addProjectDropDown.appendChild(projectOption)
+        }
+    }
+    addItemProjectTitle.appendChild(addProjectDropDown);
+    let projectDropDownValue = '';
+    addProjectDropDown.addEventListener('change', (e) => {
+        projectDropDownValue = e.target.value;
+    });
+
+    let addPageButton = document.createElement('button');
+    addPageButton.textContent = 'Add';
+    addPageButton.addEventListener('click', () => {
+        let newItem = new Todo(currentTitleValue, currentDescriptionValue, currentDueDateValue, currentDropDownValue, projectDropDownValue)
+        let projectColumn = document.querySelector('.to-do-column').firstElementChild;
+
+
+        let listContainer = document.createElement('li');
+        let listItem = document.createElement('div');
+        let itemTitle = document.createElement('h2');
+        let itemDescription = document.createElement('h4');
+        let itemDueDate = document.createElement('h4');
+        let itemPriority = document.createElement('h4');
+        let deleteButton = document.createElement('button');
+        itemTitle.textContent = newItem.title;
+        itemDescription.textContent = newItem.description;
+        itemDueDate.textContent = newItem.dueDate;
+        itemPriority.textContent = newItem.priority;
+        deleteButton.textContent = 'Delete';
+        listItem.classList.add('column-title');
+        deleteButton.classList.add('delete-button');
+
+        listItem.appendChild(itemTitle);
+        listItem.appendChild(itemDescription);
+        listItem.appendChild(itemDueDate);
+        listItem.appendChild(itemPriority);
+        listItem.appendChild(deleteButton);
+
+        listContainer.appendChild(listItem)
+
+        projectColumn.appendChild(listContainer)
+        setDeleteButtons();
+    })
+
+    addPage.appendChild(addPageTitle);
+    addPage.appendChild(addPageDescription);
+    addPage.appendChild(addDueDateTitle);
+    addPage.appendChild(addPriorityTitle);
+    addPage.appendChild(addItemProjectTitle);
+    //addPage.appendChild(addPageForm);
+    addPage.appendChild(addPageButton);
+
+    document.body.appendChild(addPage)
+}
+
+function setDeleteButtons() {
+    let deleteButtons = document.querySelectorAll('.delete-button');
+    for (let button of deleteButtons) {
+        button.addEventListener('click', () => {
+            button.parentElement.parentElement.remove();
+        })
+    }
+}
+
+let addProjectButton = document.querySelector('.add-project-button');
+addProjectButton.addEventListener('click', () => {
+    //add a function to create a pop up screen to add items
+    addProjectElement();
+})
+
+let addItemButton = document.querySelector('.add-item-button');
+addItemButton.addEventListener('click', () => {
+    //add a function to create a pop up screen to add items
+    addItemElement();
+})
+
 
 let cleanCar = new Todo('Clean Carpet', 'Vaccum the carpets', '02/12/26', 'Medium', 'Clean Car');
 let changeOil = new Todo('Change Oil', 'Change car engine oil', '05/12/26', 'High', 'Clean Car');
@@ -37,4 +224,4 @@ carMaintenance.add(carMaintenance.todoItems, cleanCar)
 carMaintenance.add(carMaintenance.todoItems, changeOil)
 
 carMaintenance.remove(carMaintenance.todoItems, cleanCar)
-console.log(carMaintenance)
+// console.log(carMaintenance)

@@ -13,11 +13,14 @@
     justify-content: space-around;
 }
 
-.button {
+.add-project-button,
+.add-item-button,
+.delete-button {
     height: 30px;
     align-self: center;
 }
 
-.project-column {
+.project-column,
+.to-do-column {
     border: 1px solid black;
 }
